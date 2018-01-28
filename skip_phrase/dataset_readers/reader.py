@@ -14,7 +14,11 @@ from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
-@DatasetReader.register("skip_phr_lines")
+# TODO: separate vocabs? (embeddings) for pivot and context
+# Tokenize pivot phrase so that it is one single token ? or move this logic to encder
+# Index pivot phrase tokens so that we do w2i for separate words ? oe move this logic to encoder 
+
+@DatasetReader.register("skip_phrase_lines")
 class SkipPhraseDatasetReader(DatasetReader):
     """
     A ``DatasetReader`` reads data from some location and constructs a :class:`Dataset`.  All
@@ -34,12 +38,17 @@ class SkipPhraseDatasetReader(DatasetReader):
         self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
         
     @classmethod
-    def from_params(cls, params: Params) -> 'DatasetReader':
-        """
-        Static method that constructs the dataset reader described by ``params``.
-        """
-        choice = params.pop_choice('type', cls.list_available())
-        return cls.by_name(choice).from_params(params)
+    def from_params(cls, params: Params) -> 'SkipPhraseDatasetReader':
+        tokenizer = Tokenizer.from_params(params.pop('tokenizer', {}))
+        token_indexers = TokenIndexer.dict_from_params(params.pop('token_indexers', {}))
+        window_size = params.pop('window_size', 5)
+        pivot_ngram_degree = params.pop('pivot_ngram_degree', 1)
+        params.assert_empty(cls.__name__)
+
+        return cls(window_size = window_size, 
+                   pivot_ngram_degree = pivot_ngram_degree, 
+                   tokenizer = tokenizer, 
+                   token_indexers = token_indexers)
     
     @overrides
     def read(self, file_path: str) -> Dataset:
@@ -56,8 +65,8 @@ class SkipPhraseDatasetReader(DatasetReader):
             
             sentence = nltk.word_tokenize(line)
 
-            if len(sentence) == 1:
-                continue
+            #if len(sentence) == 1:
+            #    continue
 
             sentence_instances = self.sentence_to_instances(sentence)
             instances.extend(sentence_instances)
@@ -104,15 +113,14 @@ class SkipPhraseDatasetReader(DatasetReader):
         have to make some assumptions about the kind of ``DatasetReader`` that it's using, in order
         to pass it the right information.
         """
-
         tokenized_pp = self._tokenizer.tokenize(pivot_phrase.lower())
-        tokenized_cw = self._tokenizer.tokenize(context_words.lower())
-
         pp_field = TextField(tokenized_pp, self._token_indexers)
-        cw_field = TextField(tokenized_cw, self._token_indexers)
+        fields = {'pivot_phrase': pp_field}
 
-        fields = {'pivot_phrase': pp_field,
-                  'context_words': cw_field}
+        if context_words is not None:
+            tokenized_cw = self._tokenizer.tokenize(context_words.lower())
+            cw_field = TextField(tokenized_cw, self._token_indexers)
+            fields['context_words'] = cw_field
 
         return Instance(fields)
 

@@ -1,0 +1,1 @@
+from skip_phrase.models.skip_phrase import SkipPhrase

@@ -36,6 +36,8 @@ class TestSkipPhraserDatasetReader(AllenNlpTestCase):
         instances.append({"pivot_phrase": ["."],
                      "context_words": ["of", "none"]})
 
+        instances.append({"pivot_phrase": ["wrong"]})
+
         instances.append({"pivot_phrase": ["right"],
                      "context_words": ["away"]})
 
@@ -47,5 +49,8 @@ class TestSkipPhraserDatasetReader(AllenNlpTestCase):
         for i in range(len(instances)):
             fields = dataset.instances[i].fields
             assert [t.text for t in fields["pivot_phrase"].tokens] == instances[i]["pivot_phrase"]
-            assert [t.text for t in fields["context_words"].tokens] == instances[i]["context_words"]
+            try:
+                assert [t.text for t in fields["context_words"].tokens] == instances[i]["context_words"]
+            except KeyError:
+                pass
 
