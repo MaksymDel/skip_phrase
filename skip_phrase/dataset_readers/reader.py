@@ -30,26 +30,15 @@ class SkipPhraseDatasetReader(DatasetReader):
                  window_size: int = None,
                  pivot_ngram_degree: int = None,
                  tokenizer: Tokenizer = None,
-                 token_indexers: Dict[str, TokenIndexer] = None) -> None:
+                 pivot_phrase_token_indexers: Dict[str, TokenIndexer] = None
+                 ) -> None:
 
         self.window_size = window_size
         self.pivot_ngram_degree = pivot_ngram_degree
         self._tokenizer = tokenizer or WordTokenizer()
-        self._token_indexers = token_indexers or {"tokens": SingleIdTokenIndexer()}
+        self._pivot_phrase_token_indexers = pivot_phrase_token_indexers or {"words": SingleIdTokenIndexer()}
         
-    @classmethod
-    def from_params(cls, params: Params) -> 'SkipPhraseDatasetReader':
-        tokenizer = Tokenizer.from_params(params.pop('tokenizer', {}))
-        token_indexers = TokenIndexer.dict_from_params(params.pop('token_indexers', {}))
-        window_size = params.pop('window_size', 5)
-        pivot_ngram_degree = params.pop('pivot_ngram_degree', 1)
-        params.assert_empty(cls.__name__)
-
-        return cls(window_size = window_size, 
-                   pivot_ngram_degree = pivot_ngram_degree, 
-                   tokenizer = tokenizer, 
-                   token_indexers = token_indexers)
-    
+        
     @overrides
     def read(self, file_path: str) -> Dataset:
         """
@@ -114,16 +103,27 @@ class SkipPhraseDatasetReader(DatasetReader):
         to pass it the right information.
         """
         tokenized_pp = self._tokenizer.tokenize(pivot_phrase.lower())
-        pp_field = TextField(tokenized_pp, self._token_indexers)
+        pp_field = TextField(tokenized_pp, self._pivot_phrase_token_indexers)
         fields = {'pivot_phrase': pp_field}
 
         if context_words is not None:
             tokenized_cw = self._tokenizer.tokenize(context_words.lower())
-            cw_field = TextField(tokenized_cw, self._token_indexers)
+            cw_field = TextField(tokenized_cw, self._pivot_phrase_token_indexers)
             fields['context_words'] = cw_field
 
         return Instance(fields)
 
+    @classmethod
+    def from_params(cls, params: Params) -> 'SkipPhraseDatasetReader':
+        tokenizer = Tokenizer.from_params(params.pop('tokenizer', {}))
+        pivot_phrase_token_indexers = TokenIndexer.dict_from_params(params.pop('pivot_phrase_token_indexers', {}))
+        window_size = params.pop('window_size', 5)
+        pivot_ngram_degree = params.pop('pivot_ngram_degree', 1)
+        
+        # check if there are unprocessed parameters
+        params.assert_empty(cls.__name__)
 
-
-    
+        return cls(window_size = window_size, 
+                   pivot_ngram_degree = pivot_ngram_degree, 
+                   tokenizer = tokenizer, 
+                   pivot_phrase_token_indexers = pivot_phrase_token_indexers)
