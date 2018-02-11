@@ -103,14 +103,21 @@ class SkipPhrase(Model):
         """
         # (batch_size, num_context_words * num_negative_examples, 1)
         loss_negative_examples = torch.bmm(embedded_negative_examples, embedded_pivot_phrase.unsqueeze(1).transpose(1, 2))
+        
+        # TODO: TO DELELTE - DEBUG
+        print("loss neg ex iNF SUM:", numpy.isinf(loss_negative_examples.data).cuda().sum())
+        print("loss neg ex iNF:", loss_negative_examples[numpy.isinf(loss_negative_examples.data).cuda()])
+
         # (batch_size, num_context_words * num_negative_examples)
         loss_negative_examples = loss_negative_examples.squeeze().sigmoid().log()
+        
+        # TODO: TO DELELTE - DEBUG
+        print("loss neg ex iNF SUM:", numpy.isinf(loss_negative_examples.data).cuda().sum())
+        print("loss neg ex iNF:", loss_negative_examples[numpy.isinf(loss_negative_examples.data).cuda()])
+        
         # (batch_size, num_context_words, num_negative_examples)
         loss_negative_examples = loss_negative_examples.view(-1, num_context_words, self.num_negative_examples)
         
-        
-
-
         # TODO: TO DELELTE - DEBUG
         print("loss neg ex iNF SUM:", numpy.isinf(loss_negative_examples.data).cuda().sum())
         print("loss neg ex iNF:", loss_negative_examples[numpy.isinf(loss_negative_examples.data).cuda()])
