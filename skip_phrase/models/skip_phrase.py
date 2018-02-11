@@ -167,7 +167,13 @@ class SkipPhrase(Model):
                                                                         False)
 
                 # Compute overall loss
-                loss = -(loss_context_words + loss_negative_examples).mean()
+                try:
+                    loss = -(loss_context_words + loss_negative_examples).mean()
+                except RuntimeError as re:
+                    print(re)
+                    print("loss_context_words", loss_context_words)
+                    print("loss_negative_examples", loss_negative_examples)
+                    print("CONTINUE\n\n\n\n\n\n\n")
 
             else: # Naive version that computes softmax over whole voacb 
                 # (batch_size, num_context_words, vocab_size)
