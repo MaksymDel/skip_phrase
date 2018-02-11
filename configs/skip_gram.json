@@ -39,9 +39,9 @@
      },
     "iterator": {
         "type": "basic",
-        "batch_size": 100,
+        "batch_size": 9000,
         "instances_per_epoch": 10000000,
-        "max_instances_in_memory": 500 
+        "max_instances_in_memory": 5000000 
     },
 
     "trainer": {
