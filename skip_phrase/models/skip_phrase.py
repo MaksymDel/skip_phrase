@@ -175,10 +175,16 @@ class SkipPhrase(Model):
 
                 # Compute overall loss
                 try:
-                    loss = -(loss_context_words + loss_negative_examples).mean()
+                    #loss = -(loss_context_words + loss_negative_examples).mean()
+                    # debug
+                    loss1 = loss_context_words.mean()
+                    loss2 = loss_negative_examples.mean()
+                    luss_sum = loss1 + loss2
+                    loss_msum = - loss_sum
+
                 except:
                     traceback.print_exc(file=sys.stdout)
-                    print("loss_negative_examples", loss_context_words)
+                    print("loss_context_words", loss_context_words)
                     print("loss_negative_examples", loss_negative_examples)
                     print("CONTINUE\n\n\n\n\n\n\n")
 
