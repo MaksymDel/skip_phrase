@@ -125,4 +125,5 @@ class SkipPhraseDatasetReader(DatasetReader):
         return cls(window_size = window_size, 
                    pivot_ngram_degree = pivot_ngram_degree, 
                    tokenizer = tokenizer, 
-                   pivot_phrase_token_indexers = pivot_phrase_token_indexers)
+                   pivot_phrase_token_indexers = pivot_phrase_token_indexers,
+                   lazy = lazy)
