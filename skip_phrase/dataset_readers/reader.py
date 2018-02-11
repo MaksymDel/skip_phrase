@@ -31,7 +31,7 @@ class SkipPhraseDatasetReader(DatasetReader):
                  pivot_ngram_degree: int = None,
                  tokenizer: Tokenizer = None,
                  pivot_phrase_token_indexers: Dict[str, TokenIndexer] = None,
-                 lazy = False
+                 lazy: bool = False
                  ) -> None:
 
         super().__init__(lazy)
@@ -118,7 +118,7 @@ class SkipPhraseDatasetReader(DatasetReader):
         pivot_phrase_token_indexers = TokenIndexer.dict_from_params(params.pop('pivot_phrase_token_indexers', {}))
         window_size = params.pop('window_size', 5)
         pivot_ngram_degree = params.pop('pivot_ngram_degree', 1)
-        
+        lazy = params.pop('lazy', False)
         # check if there are unprocessed parameters
         params.assert_empty(cls.__name__)
 
