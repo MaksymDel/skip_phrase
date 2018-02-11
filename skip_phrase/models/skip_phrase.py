@@ -108,6 +108,7 @@ class SkipPhrase(Model):
 
         # make sure there are no infs, that rarely happens
         for i, inst in enumerate(per_batch_loss):
+            print("INST:", inst)
             if numpy.isinf(inst):
                 per_batch_loss[i] = -1e18
 
