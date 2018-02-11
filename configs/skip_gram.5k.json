@@ -1,0 +1,49 @@
+{
+    "dataset_reader": {
+      "type": "skip_phrase_lines",
+      "window_size": 5,
+      "pivot_ngram_degree": 1,
+      "pivot_phrase_token_indexers": {
+        "words": {
+          "namespace": "words",
+          "type": "single_id",
+          "lowercase_tokens": true
+        }
+      }
+    },
+    "train_data_path": "../data/europarl/cleaned-tc-tok-dev.en",
+    //"validation_data_path": "../data/europarl/cleaned-tc-tok-dev.en",
+    //"test_data_path": "../data/europarl/cleaned-tc-tok-test.en",
+    "model": {
+      "type": "skip_phrase",
+      "negative_sampling": true,
+      "num_negative_examples": 10,
+      "pivot_phrase_embedder": {
+        "words": {
+          "type": "embedding",
+          "embedding_dim": 300,
+          "vocab_namespace": "words"
+        }
+      },
+      "encoder": {
+        "type": "boe",
+        "embedding_dim": 300,
+        "averaged": true
+      }
+     },
+    "iterator": {
+      "type": "basic",
+      "batch_size": 256
+    },
+
+    "trainer": {
+      "num_epochs": 10,
+      "patience": 4,
+      "cuda_device": 0,
+      "grad_clipping": 5.0,
+      "validation_metric": "-loss",
+      "optimizer": {
+        "type": "adam"
+      }
+    }
+}
