@@ -30,9 +30,11 @@ class SkipPhraseDatasetReader(DatasetReader):
                  window_size: int = None,
                  pivot_ngram_degree: int = None,
                  tokenizer: Tokenizer = None,
-                 pivot_phrase_token_indexers: Dict[str, TokenIndexer] = None
+                 pivot_phrase_token_indexers: Dict[str, TokenIndexer] = None,
+                 lazy = False
                  ) -> None:
 
+        super().__init__(lazy)
         self.window_size = window_size
         self.pivot_ngram_degree = pivot_ngram_degree
         self._tokenizer = tokenizer or WordTokenizer()
