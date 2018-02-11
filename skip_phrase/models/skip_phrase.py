@@ -68,7 +68,7 @@ class SkipPhrase(Model):
         # (batch_size, num_context_words)
         loss_context_words = loss_context_words.squeeze()
         # (batch_size, num_context_words)
-        loss_context_words = loss_context_words.sigmoid().log()
+        loss_context_words = loss_context_words.sigmoid().clamp(min=1e-20).log()
         # (batch_size, num_context_words)
         loss_context_words = loss_context_words * context_words_mask.float()
         # (batch_size,); 
@@ -104,42 +104,15 @@ class SkipPhrase(Model):
         # (batch_size, num_context_words * num_negative_examples, 1)
         loss_negative_examples = torch.bmm(embedded_negative_examples, embedded_pivot_phrase.unsqueeze(1).transpose(1, 2))
         
-        # TODO: TO DELELTE - DEBUG
-        print("loss neg ex iNF SUM:", numpy.isinf(loss_negative_examples.data).cuda().sum())
-        print("loss neg ex iNF:", loss_negative_examples[numpy.isinf(loss_negative_examples.data).cuda()])
-
-        # TODO: TO DELELTE - DEBUG
-        tmp = loss_negative_examples.squeeze().sigmoid().log()
-        print("TMP loss neg ex iNF SUM:", numpy.isinf(tmp.data).cuda().sum())
-        print("TMP loss neg ex iNF:", tmp[numpy.isinf(tmp.data).cuda()])
-
-
         # (batch_size, num_context_words * num_negative_examples) - clamp is for preventing -inf log outputs for large mini batches  
         loss_negative_examples = loss_negative_examples.squeeze().sigmoid().clamp(min=1e-20).log()
-        
-        # TODO: TO DELELTE - DEBUG
-        print("loss neg ex iNF SUM:", numpy.isinf(loss_negative_examples.data).cuda().sum())
-        print("loss neg ex iNF:", loss_negative_examples[numpy.isinf(loss_negative_examples.data).cuda()])
         
         # (batch_size, num_context_words, num_negative_examples)
         loss_negative_examples = loss_negative_examples.view(-1, num_context_words, self.num_negative_examples)
         
-        # TODO: TO DELELTE - DEBUG
-        print("loss neg ex iNF SUM:", numpy.isinf(loss_negative_examples.data).cuda().sum())
-        print("loss neg ex iNF:", loss_negative_examples[numpy.isinf(loss_negative_examples.data).cuda()])
-
         # (batch_size) 
         per_batch_loss = loss_negative_examples.sum(2).mean(1)
         
-        # TODO: TO DELELTE - DEBUG
-        print("per batch loss iNF SUM:", sum(numpy.isinf(per_batch_loss.data).cuda()))
-        print("per batch loss iNF:", per_batch_loss[numpy.isinf(per_batch_loss.data).cuda()])
-
-        per_batch_loss.mean()
-
-        # make sure there are no infs, that rarely happens
-        #per_batch_loss = per_batch_loss.clamp(min=1e-18, max=1e18)
-
         if batch_average:
             # (scalar)
             return per_batch_loss.mean()
@@ -200,20 +173,7 @@ class SkipPhrase(Model):
                                                                         num_context_words,
                                                                         False)
 
-                # Compute overall loss
- #               try:
-                #loss = -(loss_context_words + loss_negative_examples).mean()
-                # debug
-                loss1 = loss_context_words.mean()
-                loss2 = loss_negative_examples.mean()
-                loss_sum = loss1 + loss2
-                loss = - loss_sum
-
-#                except:
-#                    traceback.print_exc(file=sys.stdout)
-#                    print("loss_context_words", loss_context_words)
-#                    print("loss_negative_examples", loss_negative_examples)
-#                    print("CONTINUE\n\n\n\n\n\n\n")
+                loss = -(loss_context_words + loss_negative_examples).mean()
 
             else: # Naive version that computes softmax over whole voacb 
                 # (batch_size, num_context_words, vocab_size)
