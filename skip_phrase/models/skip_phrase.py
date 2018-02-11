@@ -109,7 +109,7 @@ class SkipPhrase(Model):
         print("loss neg ex iNF:", loss_negative_examples[numpy.isinf(loss_negative_examples.data).cuda()])
 
         # TODO: TO DELELTE - DEBUG
-        tmp = loss_negative_examples.squeeze()
+        tmp = loss_negative_examples.squeeze().sigmoid()
         print("TMP loss neg ex iNF SUM:", numpy.isinf(tmp.data).cuda().sum())
         print("TMP loss neg ex iNF:", tmp[numpy.isinf(tmp.data).cuda()])
 
