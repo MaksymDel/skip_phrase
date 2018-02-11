@@ -118,7 +118,10 @@ class SkipPhrase(Model):
         # defines how many we need
         negative_examples = torch.LongTensor(batch_size, num_context_words * self.num_negative_examples)
         # samples random indexes from vocab uniformly
-        return torch.autograd.Variable(negative_examples.random_(0, self.vocab_size))
+        if torch.cuda.device_count() > 0: # if there is a GPU
+            return torch.autograd.Variable(negative_examples.random_(0, self.vocab_size)).cuda()
+        else: # CPU
+            return torch.autograd.Variable(negative_examples.random_(0, self.vocab_size))
 
     def forward(self,
                 pivot_phrase: Dict[str, torch.Tensor],
