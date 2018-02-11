@@ -112,12 +112,14 @@ class SkipPhrase(Model):
 
 
         # TODO: TO DELELTE - DEBUG
+        print("loss neg ex iNF SUM:", sum(numpy.isinf(loss_negative_examples.data).cuda()))
         print("loss neg ex iNF:", loss_negative_examples[numpy.isinf(loss_negative_examples.data).cuda()])
 
         # (batch_size) 
         per_batch_loss = loss_negative_examples.sum(2).mean(1)
         
         # TODO: TO DELELTE - DEBUG
+        print("per batch loss iNF SUM:", sum(numpy.isinf(per_batch_loss.data).cuda()))
         print("per batch loss iNF:", per_batch_loss[numpy.isinf(per_batch_loss.data).cuda()])
 
         per_batch_loss.mean()
