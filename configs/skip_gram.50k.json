@@ -11,6 +11,11 @@
         }
       }
     },
+
+    "vocabulary": {
+      "directory_path": "models/europarl_vocab"
+    },
+
     "train_data_path": "../data/europarl/unsup.50k.en",
     //"validation_data_path": "../data/europarl/cleaned-tc-tok-dev.en",
     //"test_data_path": "../data/europarl/cleaned-tc-tok-test.en",
