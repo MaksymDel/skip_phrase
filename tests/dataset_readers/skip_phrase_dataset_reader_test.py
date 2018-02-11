@@ -8,7 +8,7 @@ class TestSkipPhraserDatasetReader(AllenNlpTestCase):
     def test_read_from_file(self):
 
         reader = SkipPhraseDatasetReader(window_size=2, pivot_ngram_degree=1)
-        dataset = reader.read('tests/fixtures/sentences.txt', )
+        instances_read = reader.read('tests/fixtures/sentences.txt', )
 
         instances = []
 
@@ -44,10 +44,10 @@ class TestSkipPhraserDatasetReader(AllenNlpTestCase):
         instances.append({"pivot_phrase": ["away"],
                       "context_words": ["right"]})
 
-        assert len(dataset.instances) == len(instances)
+        assert len(instances_read) == len(instances)
         
         for i in range(len(instances)):
-            fields = dataset.instances[i].fields
+            fields = instances_read[i].fields
             assert [t.text for t in fields["pivot_phrase"].tokens] == instances[i]["pivot_phrase"]
             try:
                 assert [t.text for t in fields["context_words"].tokens] == instances[i]["context_words"]

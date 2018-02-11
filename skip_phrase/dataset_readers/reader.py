@@ -7,7 +7,7 @@ import nltk
 from allennlp.common import Params
 from allennlp.common.checks import ConfigurationError
 from allennlp.data import DatasetReader, Instance
-from allennlp.data.dataset import Dataset
+from allennlp.data.dataset import Batch
 from allennlp.data.fields import TextField, LabelField, ListField
 from allennlp.data.tokenizers import Tokenizer, WordTokenizer
 from allennlp.data.token_indexers import TokenIndexer, SingleIdTokenIndexer
@@ -40,32 +40,29 @@ class SkipPhraseDatasetReader(DatasetReader):
         
         
     @overrides
-    def read(self, file_path: str) -> Dataset:
+    def _read(self, file_path: str):
         """
         Actually reads some data from the `file_path` and returns a :class:`Dataset`.
         """
-        instances = []
-        data_file = open(file_path, 'r')
-        logger.info("Reading instances from lines in file at: %s", file_path)
+        #instances = []
+        with open(file_path, "r") as data_file:
+            logger.info("Reading instances from lines in file at: %s", file_path)
 
-        for line_num, line in enumerate(tqdm.tqdm(data_file.readlines())):
-            if not line:
-                continue
-            
-            sentence = nltk.word_tokenize(line)
+            for line_num, line in enumerate(tqdm.tqdm(data_file.readlines())):
+                if not line:
+                    continue
+                
+                sentence = nltk.word_tokenize(line)
 
-            #if len(sentence) == 1:
-            #    continue
+                #if len(sentence) == 1:
+                #    continue
 
-            sentence_instances = self.sentence_to_instances(sentence)
-            instances.extend(sentence_instances)
-
-        if not instances:
-            raise ConfigurationError("No instances read!")
-        data_file.close()
-
-        return Dataset(instances)
-
+                sentence_instances = self.sentence_to_instances(sentence)
+                for inst in sentence_instances:
+                    yield inst
+                
+                #instances.extend(sentence_instances)
+         
     def sentence_to_instances(self, sentence: List[str]) -> List[Instance]:
         """
         Coverts a sentence to a banch of instances. Senteces should be split by space.
