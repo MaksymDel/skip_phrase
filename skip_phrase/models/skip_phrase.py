@@ -180,7 +180,7 @@ class SkipPhrase(Model):
                 loss1 = loss_context_words.mean()
                 loss2 = loss_negative_examples.mean()
                 loss_sum = loss1 + loss2
-                loss_msum = - loss_sum
+                loss = - loss_sum
 
 #                except:
 #                    traceback.print_exc(file=sys.stdout)
