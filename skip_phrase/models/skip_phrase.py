@@ -75,6 +75,9 @@ class SkipPhrase(Model):
         # however numerator is zero anyway due to applying mask above
         per_batch_loss = loss_context_words.sum(1) / (context_words_mask.sum(1).float() + 1e-13)
 
+        # make sure there are no infs, that rarely happens
+        per_batch_loss = per_batch_loss.clamp(min=1e-18, max=1e18)
+
         if batch_average:
             # (scalar)  
             num_non_empty_sequences = ((context_words_mask.sum(1) > 0).float().sum() + 1e-13)
@@ -172,8 +175,9 @@ class SkipPhrase(Model):
                 # Compute overall loss
                 try:
                     loss = -(loss_context_words + loss_negative_examples).mean()
-                except RuntimeError as re:
-                    print(re)
+                except:
+                    traceback.print_exc(file=sys.stdout)
+                    print("loss_negative_examples", loss_context_words)
                     print("loss_negative_examples", loss_negative_examples)
                     print("CONTINUE\n\n\n\n\n\n\n")
 
