@@ -112,7 +112,7 @@ class SkipPhrase(Model):
 
 
         # TODO: TO DELELTE - DEBUG
-        print("loss neg ex iNF SUM:", numpy.isinf(loss_negative_examples.data).cuda()).sum(2).sum(1).sum(0)
+        print("loss neg ex iNF SUM:", numpy.isinf(loss_negative_examples.data).cuda().sum(2).sum(1).sum(0))
         print("loss neg ex iNF:", loss_negative_examples[numpy.isinf(loss_negative_examples.data).cuda()])
 
         # (batch_size) 
