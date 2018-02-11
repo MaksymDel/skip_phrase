@@ -106,6 +106,9 @@ class SkipPhrase(Model):
         # (batch_size) 
         per_batch_loss = loss_negative_examples.sum(2).mean(1)
 
+        # make sure there are no infs, that rarely times occur
+        per_batch_loss = [0 if inst == -float('Inf') or inst == float('Inf') else inst for inst in per_batch_loss]
+
         if batch_average:
             # (scalar)
             return per_batch_loss.mean()
@@ -171,7 +174,6 @@ class SkipPhrase(Model):
                     loss = -(loss_context_words + loss_negative_examples).mean()
                 except RuntimeError as re:
                     print(re)
-                    print("loss_context_words", loss_context_words)
                     print("loss_negative_examples", loss_negative_examples)
                     print("CONTINUE\n\n\n\n\n\n\n")
 
