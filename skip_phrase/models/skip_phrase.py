@@ -107,8 +107,12 @@ class SkipPhrase(Model):
         per_batch_loss = loss_negative_examples.sum(2).mean(1)
 
         # make sure there are no infs, that rarely times occur
-        per_batch_loss = [0 if inst == -float('Inf') or inst == float('Inf') else inst for inst in per_batch_loss]
-
+        for i, inst in enumerate(per_batch_loss):
+            if inst == float('Inf'):
+                per_batch_loss[i] = -1e18
+            if inst == float("-Inf"):
+                per_batch_loss[i] = 0 
+        
         if batch_average:
             # (scalar)
             return per_batch_loss.mean()
