@@ -117,6 +117,7 @@ class SkipPhrase(Model):
         per_batch_loss = loss_negative_examples.sum(2).mean(1)
         
         # TODO: TO DELELTE - DEBUG
+        per_batch_loss == float("inf")
         print(sum(per_batch_loss == float("inf")))
         per_batch_loss.mean()
 
