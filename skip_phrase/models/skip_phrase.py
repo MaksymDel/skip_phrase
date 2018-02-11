@@ -117,7 +117,8 @@ class SkipPhrase(Model):
         per_batch_loss = loss_negative_examples.sum(2).mean(1)
         
         # TODO: TO DELELTE - DEBUG
-        print("iNF:", per_batch_loss[numpy.isinf(per_batch_loss.data)])
+        print("iNF:", per_batch_loss[numpy.isinf(per_batch_loss.data).cuda()])
+
         per_batch_loss.mean()
 
         # make sure there are no infs, that rarely happens
