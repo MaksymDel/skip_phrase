@@ -107,10 +107,17 @@ class SkipPhrase(Model):
         loss_negative_examples = loss_negative_examples.squeeze().sigmoid().log()
         # (batch_size, num_context_words, num_negative_examples)
         loss_negative_examples = loss_negative_examples.view(-1, num_context_words, self.num_negative_examples)
+        
+        
+        # TODO: TO DELELTE - DEBUG
+        # print(sum(loss_negative_examples == float("inf")))
+
+
         # (batch_size) 
         per_batch_loss = loss_negative_examples.sum(2).mean(1)
         
         # TODO: TO DELELTE - DEBUG
+        print(sum(per_batch_loss == float("inf")))
         per_batch_loss.mean()
 
         # make sure there are no infs, that rarely happens
