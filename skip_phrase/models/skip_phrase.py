@@ -174,19 +174,19 @@ class SkipPhrase(Model):
                                                                         False)
 
                 # Compute overall loss
-                try:
-                    #loss = -(loss_context_words + loss_negative_examples).mean()
-                    # debug
-                    loss1 = loss_context_words.mean()
-                    loss2 = loss_negative_examples.mean()
-                    loss_sum = loss1 + loss2
-                    loss_msum = - loss_sum
+ #               try:
+                #loss = -(loss_context_words + loss_negative_examples).mean()
+                # debug
+                loss1 = loss_context_words.mean()
+                loss2 = loss_negative_examples.mean()
+                loss_sum = loss1 + loss2
+                loss_msum = - loss_sum
 
-                except:
-                    traceback.print_exc(file=sys.stdout)
-                    print("loss_context_words", loss_context_words)
-                    print("loss_negative_examples", loss_negative_examples)
-                    print("CONTINUE\n\n\n\n\n\n\n")
+#                except:
+#                    traceback.print_exc(file=sys.stdout)
+#                    print("loss_context_words", loss_context_words)
+#                    print("loss_negative_examples", loss_negative_examples)
+#                    print("CONTINUE\n\n\n\n\n\n\n")
 
             else: # Naive version that computes softmax over whole voacb 
                 # (batch_size, num_context_words, vocab_size)
