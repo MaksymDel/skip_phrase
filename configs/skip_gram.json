@@ -1,6 +1,7 @@
 {
     "dataset_reader": {
       "type": "skip_phrase_lines",
+      "lazy": true,
       "window_size": 5,
       "pivot_ngram_degree": 1,
       "pivot_phrase_token_indexers": {
@@ -37,12 +38,14 @@
       }
      },
     "iterator": {
-      "type": "basic",
-      "batch_size": 256
+        "type": "basic",
+        "batch_size": 512,
+        "instances_per_epoch": 1000000,
+        "max_instances_in_memory": 75000 
     },
 
     "trainer": {
-      "num_epochs": 5,
+      "num_epochs": 10,
       "patience": 3,
       "cuda_device": 0,
       "grad_clipping": 5.0,
