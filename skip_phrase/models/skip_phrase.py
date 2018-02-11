@@ -109,15 +109,16 @@ class SkipPhrase(Model):
         loss_negative_examples = loss_negative_examples.view(-1, num_context_words, self.num_negative_examples)
         
         
-        # TODO: TO DELELTE - DEBUG
-        # print(sum(loss_negative_examples == float("inf")))
 
+
+        # TODO: TO DELELTE - DEBUG
+        print("loss neg ex iNF:", loss_negative_examples[numpy.isinf(loss_negative_examples.data).cuda()])
 
         # (batch_size) 
         per_batch_loss = loss_negative_examples.sum(2).mean(1)
         
         # TODO: TO DELELTE - DEBUG
-        print("iNF:", per_batch_loss[numpy.isinf(per_batch_loss.data).cuda()])
+        print("per batch loss iNF:", per_batch_loss[numpy.isinf(per_batch_loss.data).cuda()])
 
         per_batch_loss.mean()
 
