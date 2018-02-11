@@ -114,8 +114,8 @@ class SkipPhrase(Model):
         print("TMP loss neg ex iNF:", tmp[numpy.isinf(tmp.data).cuda()])
 
 
-        # (batch_size, num_context_words * num_negative_examples)
-        loss_negative_examples = loss_negative_examples.squeeze().sigmoid().log()
+        # (batch_size, num_context_words * num_negative_examples) - clamp is for preventing -inf log outputs for large mini batches  
+        loss_negative_examples = loss_negative_examples.squeeze().sigmoid().clamp(min=1e-20).log()
         
         # TODO: TO DELELTE - DEBUG
         print("loss neg ex iNF SUM:", numpy.isinf(loss_negative_examples.data).cuda().sum())
