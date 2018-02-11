@@ -109,6 +109,9 @@ class SkipPhrase(Model):
         loss_negative_examples = loss_negative_examples.view(-1, num_context_words, self.num_negative_examples)
         # (batch_size) 
         per_batch_loss = loss_negative_examples.sum(2).mean(1)
+        
+        # TODO: TO DELELTE - DEBUG
+        per_batch_loss.mean()
 
         # make sure there are no infs, that rarely happens
         #per_batch_loss = per_batch_loss.clamp(min=1e-18, max=1e18)
