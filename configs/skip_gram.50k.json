@@ -1,6 +1,7 @@
 {
     "dataset_reader": {
       "type": "skip_phrase_lines",
+      "lazy": true,
       "window_size": 5,
       "pivot_ngram_degree": 1,
       "pivot_phrase_token_indexers": {
