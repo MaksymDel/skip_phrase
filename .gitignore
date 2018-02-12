@@ -7,3 +7,5 @@
 .cache
 .vscode
 out.txt
+.ipynb_checkpoints
+.pytest_cache

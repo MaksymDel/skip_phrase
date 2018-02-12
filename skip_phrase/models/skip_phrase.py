@@ -32,7 +32,7 @@ class SkipPhrase(Model):
                  negative_sampling: bool = True,
                  num_negative_examples: int = 10) -> None:
         super().__init__(vocab, regularizer)
-
+        
         self.negative_sampling = negative_sampling
         self.num_negative_examples = num_negative_examples
         self.pivot_phrase_embedder = pivot_phrase_embedder

@@ -41,7 +41,7 @@
         "type": "basic",
         "batch_size": 600,
         "instances_per_epoch": 5000000,
-        "max_instances_in_memory": 10000000 
+        "max_instances_in_memory": 5000000 
     },
 
     "trainer": {
