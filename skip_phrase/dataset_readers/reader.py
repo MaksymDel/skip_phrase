@@ -71,12 +71,17 @@ class SkipPhraseDatasetReader(DatasetReader):
         """
         instances = []
         for i in range(len(sentence)):
-            pivot_phrase = [sentence[i]]
-            context_words_left = sentence[max(i - self.window_size, 0): i]
-            context_words_right = sentence[i + 1: i + 1 + self.window_size]
-            instance = self.text_to_instance(" ".join(pivot_phrase), 
-                                             " ".join(context_words_left + context_words_right))
-            instances.append(instance)
+            
+            for d in range(self.pivot_ngram_degree):
+                d = d + 1
+                if i + d > len(sentence):
+                    continue
+                pivot_phrase = [" ".join(sentence[i:i+d])]
+                context_words_left = sentence[max(i - self.window_size, 0): i]
+                context_words_right = sentence[i+d: i+d + self.window_size]
+                instance = self.text_to_instance(" ".join(pivot_phrase), 
+                                                 " ".join(context_words_left + context_words_right))
+                instances.append(instance)
         
         return instances
  
