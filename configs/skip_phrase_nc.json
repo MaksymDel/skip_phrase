@@ -1,0 +1,58 @@
+{
+    "dataset_reader": {
+      "type": "skip_phrase_lines",
+      "lazy": true,
+      "window_size": 5,
+      "pivot_ngram_degree": 4,
+      "pivot_phrase_token_indexers": {
+        "words": {
+          "namespace": "words",
+          "type": "single_id",
+          "lowercase_tokens": true
+        }
+      }
+    },
+    
+    "vocabulary": {
+        "directory_path": "models/europarl_vocab"
+      },
+  
+    //"train_data_path": "../data/news_crawl/toy",
+    "train_data_path": "../data/news_crawl/news.2017.en.shuffled.deduped",
+    //"validation_data_path": "../data/europarl/cleaned-tc-tok-dev.en",
+    //"test_data_path": "../data/europarl/cleaned-tc-tok-test.en",
+    "model": {
+      "type": "skip_phrase",
+      "negative_sampling": true,
+      "num_negative_examples": 10,
+      "pivot_phrase_embedder": {
+        "words": {
+          "type": "embedding",
+          "embedding_dim": 300,
+          "vocab_namespace": "words"
+        }
+      },
+      "encoder": {
+        "type": "rnn",
+        "input_size": 300,
+        "hidden_size": 300,
+      }
+     },
+    "iterator": {
+        "type": "basic",
+        "batch_size": 600,
+        "instances_per_epoch": 10000000,
+        "max_instances_in_memory": 1000000 
+    },
+
+    "trainer": {
+      "num_epochs": 400,
+      "patience": 40,
+      "cuda_device": 0,
+      "grad_clipping": 5.0,
+      "validation_metric": "-loss",
+      "optimizer": {
+        "type": "adam"
+      }
+    }
+}
