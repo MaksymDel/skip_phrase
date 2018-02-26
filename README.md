@@ -1,8 +1,10 @@
 # skip_phrase
 Compositional phrase embeddings
 
-Pytroch implementation of skip-gram model for arbitary degree for phrases as a basic units. 
+Pytroch implementation of skip-gram model to embed phrases compositionally.
 
-Allows to get an embedding for every phrase that consits of known individual words. 
+For each phrase, individual phrase's words pass through an encoder (RNN/CNN/etc) to get a phrase embedding. Then we predict surrounding words from this phrase embedding.
 
-Uses negative smapling.
+Allows getting an embedding for every phrase that consists of known individual words. 
+
+Uses negative sampling.
