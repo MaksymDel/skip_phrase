@@ -7,4 +7,4 @@ For each phrase, individual phrase's words pass through an encoder (RNN/CNN/etc)
 
 Allows getting an embedding for every phrase that consists of known individual words. 
 
-Uses negative sampling and (allennlp)[https://github.com/allenai/allennlp] DL4NLP library.
+Uses negative sampling and (allennlp) [https://github.com/allenai/allennlp] DL4NLP library.
